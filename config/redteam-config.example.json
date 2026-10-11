@@ -26,7 +26,7 @@
   "env": {
     "FOFA_KEY": "",
     "REDTEAM_VPS_HOST": "YOUR_VPS_IP",
-    "REDTEAM_VPS_KEY": "~/.ssh/id_ed25519_aliyun",
+    "REDTEAM_VPS_KEY": "~/.ssh/id_rsa_vps",
     "REDTEAM_VPS_USER": "root",
     "REDTEAM_VPS_PORT": "22"
   },
