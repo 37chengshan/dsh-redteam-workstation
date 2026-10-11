@@ -1,0 +1,41 @@
+# --- secrets (NEVER commit) ---
+.env
+*.env
+!.env.example
+cf-token*.txt
+id_rsa*
+id_ed25519*
+*.pem
+*.key
+credentials*
+*_secret*
+*.token
+
+# --- runtime state ---
+*.log
+tunnel-auto.json
+settings.json
+override-state.json
+unpacked-asar.json
+drill-grant.json
+*.bak
+*.bak-*
+*.db
+*.sqlite
+
+# --- OS / editor ---
+Thumbs.db
+desktop.ini
+.DS_Store
+*.swp
+*~
+.idea/
+.vscode/
+
+# --- build artifacts ---
+__pycache__/
+*.pyc
+node_modules/
+dist/
+build/
+tmp/

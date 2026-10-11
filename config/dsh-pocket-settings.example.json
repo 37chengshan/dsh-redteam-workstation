@@ -1,0 +1,7 @@
+{
+  "tunnelMode": "named",
+  "tunnelToken": "YOUR_TUNNEL_TOKEN",
+  "tunnelHostname": "dsh.YOUR_DOMAIN",
+  "lanEnabled": true,
+  "lanAuthEnabled": true
+}

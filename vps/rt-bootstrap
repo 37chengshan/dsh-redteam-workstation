@@ -1,0 +1,8 @@
+#!/bin/bash
+# 幂等：已存在的会话不动
+mkdir -p /opt/payload/.logs
+for p in 9000 9001 9002 9003 9004; do
+  if ! tmux has-session -t "shell-$p" 2>/dev/null; then
+    tmux new-session -d -s "shell-$p" "nc -lvnp $p >> /opt/payload/.logs/shell-$p.log 2>&1"
+  fi
+done

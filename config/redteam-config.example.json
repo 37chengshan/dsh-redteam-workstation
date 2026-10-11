@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "platform": "windows",
+  "toolkitDir": "D:\\security-tools",
+  "nucleiTemplatesDir": "D:\\security-tools\\nuclei-templates",
+  "binDirs": [
+    "D:\\security-tools\\bin"
+  ],
+  "tools": {
+    "nmap": "D:\\security-tools\\bin\\nmap.cmd",
+    "nuclei": "D:\\security-tools\\bin\\nuclei.cmd",
+    "masscan": "",
+    "fscan": "D:\\security-tools\\bin\\fscan.cmd",
+    "gogo": "D:\\security-tools\\bin\\gogo.cmd",
+    "suo5": "D:\\security-tools\\bin\\suo5.cmd",
+    "frpc": "D:\\security-tools\\bin\\frpc.cmd",
+    "frps": "D:\\security-tools\\bin\\frps.cmd",
+    "chisel": "D:\\security-tools\\bin\\chisel.cmd",
+    "ffuf": "D:\\security-tools\\bin\\ffuf.cmd",
+    "httpx": "D:\\security-tools\\bin\\httpx.cmd",
+    "dnsx": "D:\\security-tools\\bin\\dnsx.cmd",
+    "subfinder": "D:\\security-tools\\bin\\subfinder.cmd",
+    "ksubdomain": "D:\\security-tools\\bin\\ksubdomain.cmd",
+    "impacket": "D:\\security-tools\\bin\\impacket-secretsdump.cmd"
+  },
+  "env": {
+    "FOFA_KEY": "",
+    "REDTEAM_VPS_HOST": "YOUR_VPS_IP",
+    "REDTEAM_VPS_KEY": "~/.ssh/id_ed25519_aliyun",
+    "REDTEAM_VPS_USER": "root",
+    "REDTEAM_VPS_PORT": "22"
+  },
+  "notes": "Windows 侧每个工具是 .cmd 包装器，内部转发到 WSL: wsl.exe -d Ubuntu-22.04 -e /mnt/d/security-tools/bin/<tool>  %*。真实二进制是 Linux ELF，放在 D:\\security-tools\bin。$DSH_HOME/redteam/toolkit/ 下 16 个 junction 指向同一份（供 setup.sh 体检）。nuclei 模板 D:\\security-tools\nuclei-templates（14042 个）。gowitness / naabu / ligolo 也都装了但 catalog 只列 15 个。",
+  "envAdaptSkip": false,
+  "envAdaptConfigured": true,
+  "updated_at": "2026-10-11T21:57:12.470843Z"
+}

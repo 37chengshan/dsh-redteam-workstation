@@ -1,0 +1,64 @@
+#!/bin/bash
+# 红队 VPS 辅助工具 —— 装在 /usr/local/bin/rt
+# 用法见 rt 无参数输出
+PAYLOAD=/opt/payload
+case "$1" in
+  payload)
+    shift; ls -la $PAYLOAD/"$@" 2>/dev/null || { echo '目录：'; ls $PAYLOAD; } ;;
+  listen)
+    shift
+    PORT=${1:-9000}
+    tmux has-session -t "shell-$PORT" 2>/dev/null && { echo "会话 shell-$PORT 已存在"; exit 0; }
+    mkdir -p $PAYLOAD/.logs
+    tmux new-session -d -s "shell-$PORT" "nc -lvnp $PORT >> $PAYLOAD/.logs/shell-$PORT.log 2>&1"
+    sleep 1
+    ss -ltn | grep ":$PORT " >/dev/null && echo "✅ 已监听 $PORT（tmux: shell-$PORT）" || echo "❌ 监听失败"
+    ;;
+  listen-multi)
+    shift
+    RANGE=${1:-9000-9010}
+    S=${RANGE%-*}; E=${RANGE#*-}
+    for p in $(seq $S $E); do
+      tmux has-session -t "shell-$p" 2>/dev/null || \
+        tmux new-session -d -s "shell-$p" "nc -lvnp $p >> $PAYLOAD/.logs/shell-$p.log 2>&1"
+    done
+    tmux ls ;;
+  read)
+    shift
+    PORT=${1:-9000}; N=${2:-40}
+    tail -n "$N" "$PAYLOAD/.logs/shell-$PORT.log" 2>/dev/null || echo "无日志（$PORT）" ;;
+  send)
+    shift
+    PORT=${1:-9000}; shift
+    echo "$*" | nc -q 2 127.0.0.1 "$PORT" ;;
+  sessions) tmux ls ;;
+  attach)  shift; tmux attach -t "$1" ;;
+  kill)    shift; tmux kill-session -t "shell-$1" 2>/dev/null; rm -f "$PAYLOAD/.logs/shell-$1.log"; echo "已清理 $1" ;;
+  killall) tmux kill-server 2>/dev/null; rm -f $PAYLOAD/.logs/shell-*.log; echo '全部会话已清' ;;
+  status)
+    echo '=== tmux 会话 ==='; tmux ls 2>/dev/null || echo '无'
+    echo; echo '=== 监听端口 ==='
+    ss -ltnp 2>/dev/null | grep -E ':(9[0-9]{3})' || echo '无'
+    echo; echo '=== nginx ==='; systemctl is-active nginx
+    echo; echo '=== 载荷 ==='; du -sh $PAYLOAD 2>/dev/null ;;
+  *)
+    cat <<'H'
+用法: rt <命令>
+
+  载荷
+    payload [目录]       列出载荷（linux/windows/webshell/misc）
+  监听
+    listen <端口>        开 tmux 监听（默认 9000），输出写 .logs/
+    listen-multi <范围>  批量开（默认 9000-9010）
+    read <端口> [行数]   读回监听输出（智能体用这个，不用 attach）
+    send <端口> <数据>   向回连会话下发数据
+  会话
+    sessions             列出所有 tmux 会话
+    attach <端口>        接回（人工查看）
+    kill <端口>          关单个 + 清日志
+    killall              全清
+  其他
+    status               总览
+H
+    ;;
+esac
